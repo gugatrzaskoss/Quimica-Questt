@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Química Quest — Missão Laboratório</title>
+<style>
+:root{--bg:#050b14;--panel:#0d1a2c;--line:#294461;--text:#edf7ff;--muted:#9fb5cb;--cyan:#5ce7d4;--purple:#9b8cff;--green:#4ce28a;--yellow:#ffd34f;--red:#ff6577}
+*{box-sizing:border-box}body{margin:0;color:var(--text);font-family:Arial,Segoe UI,sans-serif;background:radial-gradient(circle at 15% 10%,#17405d 0,transparent 28%),radial-gradient(circle at 90% 20%,#30245c 0,transparent 28%),var(--bg);min-height:100vh}
+header{position:sticky;top:0;z-index:5;background:#050b14e8;backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:17px 5%;display:flex;justify-content:space-between;align-items:center}.logo{font-size:20px;font-weight:900}.logo span{color:var(--cyan)}nav{display:flex;gap:7px;flex-wrap:wrap}
+button{font:inherit;cursor:pointer}.nav,.secondary{background:#102039;color:var(--text);border:1px solid var(--line);padding:10px 14px;border-radius:11px;font-weight:700}.nav:hover,.secondary:hover{border-color:var(--cyan)}
+main{max-width:1150px;margin:auto;padding:34px 5% 65px}.hero{min-height:65vh;display:grid;grid-template-columns:1.2fr .8fr;align-items:center;gap:30px}.badge{display:inline-block;border:1px solid var(--cyan);color:var(--cyan);padding:7px 11px;border-radius:99px;font-size:12px;font-weight:900;letter-spacing:.5px}
+h1{font-size:clamp(42px,7vw,76px);line-height:.95;margin:18px 0}h1 span{color:var(--cyan)}.lead{font-size:18px;color:var(--muted);line-height:1.6}.primary{background:var(--cyan);color:#06131c;border:0;padding:13px 19px;border-radius:12px;font-weight:900}.hero-buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.lab,.arena,.mission{background:linear-gradient(145deg,#12253c,#091321);border:1px solid var(--line);border-radius:24px;padding:25px;box-shadow:0 20px 60px #0004}.lab{text-align:center}.lab-icon{font-size:90px;animation:float 3s ease-in-out infinite}@keyframes float{50%{transform:translateY(-8px)}}
+section{margin-top:60px}.title{font-size:32px;margin:0 0 8px}.sub{color:var(--muted);margin-bottom:22px}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:19px}.emoji{font-size:34px}.card p{color:var(--muted);font-size:14px;line-height:1.5}
+.phases,.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.phase{background:#0b1727;border:1px solid var(--line);border-radius:16px;padding:17px}.phase b{color:var(--cyan)}
+.game{display:grid;grid-template-columns:220px 1fr;gap:15px}.side{display:flex;flex-direction:column;gap:11px}.stat{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:15px}.stat-label{font-size:11px;color:var(--muted);font-weight:900;letter-spacing:.8px}.stat-value{font-size:25px;font-weight:900;margin-top:6px}.arena{padding:23px}
+.progress{height:9px;background:#06101c;border-radius:99px;overflow:hidden;margin-bottom:20px}.progress div{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--purple));transition:width .3s}
+.qtop{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.difficulty{font-size:12px;font-weight:900;letter-spacing:1px;padding:7px 12px;border-radius:9px;border:2px solid;text-transform:uppercase}.difficulty.easy{color:var(--green);border-color:var(--green);background:#4ce28a12}.difficulty.medium{color:var(--yellow);border-color:var(--yellow);background:#ffd34f12}.difficulty.hard{color:var(--red);border-color:var(--red);background:#ff657712}
+.question{font-size:25px;line-height:1.4;margin:19px 0 22px}.options{display:grid;grid-template-columns:1fr 1fr;gap:11px}.option{padding:16px;border:2px solid var(--line);border-radius:13px;background:#091525;color:var(--text);text-align:left;font-weight:700;transition:.15s}.option:hover{border-color:var(--cyan);transform:translateY(-2px)}.option.correct{border-color:var(--green)!important;background:#4ce28a16!important}.option.wrong{border-color:var(--red)!important;background:#ff657716!important}.option:disabled{cursor:default}
+.feedback{min-height:34px;margin:17px 0;font-weight:800;line-height:1.5}.hidden{display:none!important}.end{text-align:center;padding:20px}.end-icon{font-size:75px}.xp{font-size:46px;color:var(--yellow);font-weight:900;margin:15px}.tiny{font-size:12px;color:var(--muted)}footer{text-align:center;border-top:1px solid var(--line);padding:25px;color:#70869d}
+@media(max-width:820px){.hero,.game{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}}@media(max-width:560px){header{align-items:flex-start;flex-direction:column;gap:12px}.cards,.phases,.rules,.options{grid-template-columns:1fr}.question{font-size:21px}.title{font-size:27px}}
+
+/* Progressão, tabela periódica e coleção de reações */
+.progression-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.level-banner{background:linear-gradient(120deg,#112b3b,#251d48);border:1px solid #3b5473;border-radius:20px;padding:22px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}
+.level-number{font-size:38px;font-weight:900;color:var(--cyan)}
+.periodic{display:grid;grid-template-columns:repeat(18,minmax(0,1fr));gap:5px;overflow-x:auto;padding-bottom:8px}
+.element{min-width:0;aspect-ratio:1/1;border-radius:7px;border:1px solid #31445a;background:#152236;color:#68798d;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:not-allowed;position:relative;padding:2px;filter:grayscale(1);opacity:.45}
+.element.unlocked{filter:none;opacity:1;cursor:pointer;background:linear-gradient(145deg,#17384a,#14233b);border-color:#4fcfbe;color:#eefaff}
+.element.unlocked.selected{outline:3px solid var(--yellow);background:#3b351b;border-color:var(--yellow)}
+.element .anum{font-size:clamp(7px,.8vw,10px);align-self:flex-start}.element .sym{font-size:clamp(11px,1.25vw,18px);font-weight:900}.element .ename{font-size:clamp(5px,.55vw,8px);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.element .lock{font-size:8px;position:absolute;right:2px;top:1px}
+.element-spacer{visibility:hidden;aspect-ratio:1}
+.table-note{color:var(--muted);font-size:13px;line-height:1.5}
+.reaction-list{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.reaction{background:#0a1728;border:1px solid var(--line);border-radius:15px;padding:16px;display:flex;flex-direction:column;gap:9px}
+.reaction.locked-reaction{opacity:.55}
+.reaction .equation{font-size:17px;font-weight:900;line-height:1.5;color:#eafaff}
+.reaction .rmeta{font-size:12px;color:var(--muted)}
+.reaction.done{border-color:var(--green);background:#10271f}
+.tiny-btn{border:1px solid var(--line);border-radius:9px;background:#13253b;color:var(--text);padding:9px 12px;font-weight:bold;cursor:pointer}
+.tiny-btn:disabled{opacity:.45;cursor:not-allowed}
+.chem-status{margin-top:12px;min-height:24px;color:var(--cyan);font-weight:bold}
+.complete-screen{text-align:center;padding:28px;border:1px solid #425878;border-radius:24px;background:radial-gradient(circle at top,#1b3a50,#101a2d 60%)}
+.complete-screen img{width:220px;height:220px;border-radius:12px;border:7px solid white;background:white;margin:18px auto;display:block}
+@media(max-width:700px){.progression-grid,.reaction-list{grid-template-columns:1fr}.periodic{grid-template-columns:repeat(18,38px);overflow-x:auto}.element .sym{font-size:15px}.element .anum{font-size:9px}.element .ename{font-size:7px}}
+
+/* Bancada de reações */
+.wb-overlay{position:fixed;inset:0;background:#000b;display:flex;align-items:flex-start;justify-content:center;padding:18px;z-index:50;overflow:auto}
+.wb{width:min(900px,100%);margin:auto;background:linear-gradient(145deg,#12253c,#091321);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:0 30px 80px #000a}
+.wb-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.wb-head h3{margin:0 0 4px;font-size:22px}
+.wb-close{background:#102039;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-weight:700}
+.wb-close:hover{border-color:var(--cyan)}
+.wb-hint{color:var(--muted);font-size:14px;line-height:1.5;margin:6px 0}
+.wb-eq{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:center;gap:14px;margin:22px 0 14px;padding:18px 10px;background:#06101c;border:1px solid var(--line);border-radius:16px}
+.wb-side{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:center;gap:10px}
+.wb-slot{display:flex;flex-direction:column;align-items:center;gap:7px}
+.wb-op,.wb-arrow{font-size:26px;font-weight:900;color:var(--muted);margin-top:11px}
+.wb-arrow{color:var(--cyan)}
+.wb-box{min-width:100px;min-height:56px;border:2px dashed var(--line);border-radius:13px;background:#091525;color:var(--text);font-size:21px;font-weight:900;padding:8px 12px;display:flex;align-items:center;justify-content:center;gap:3px;transition:.15s}
+.wb-box:hover{border-color:var(--cyan)}
+.wb-box.active{border-color:var(--cyan);box-shadow:0 0 0 3px #5ce7d433}
+.wb-box.filled{border-style:solid;border-color:#4fcfbe;background:#12384a}
+.wb-box .cf{color:var(--yellow)}
+.wb-box.bad{border-color:var(--red)!important;background:#ff657716!important}
+.wb-box.ok{border-color:var(--green)!important;background:#4ce28a16!important}
+.wb-coef{display:flex;align-items:center;gap:8px}
+.wb-coef b{min-width:16px;text-align:center}
+.wb-coef button{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:#13253b;color:var(--text);font-weight:900;font-size:16px;line-height:1}
+.wb-coef button:hover{border-color:var(--cyan)}
+.wb-label{font-size:11px;color:var(--muted);font-weight:900;letter-spacing:.8px;text-align:center;margin-top:4px}
+.wb-pool{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;margin:8px 0 14px}
+.chip{border:2px solid var(--line);background:#0d1d33;color:var(--text);border-radius:11px;padding:10px 15px;font-size:18px;font-weight:900;transition:.15s}
+.chip:hover:not(:disabled){border-color:var(--cyan);transform:translateY(-2px)}
+.chip:disabled{opacity:.25;cursor:not-allowed}
+.wb-bal{display:flex;flex-wrap:wrap;gap:7px;align-items:center;justify-content:center;font-size:13px;color:var(--muted);margin:6px 0}
+.bal{border:1px solid var(--line);border-radius:8px;padding:4px 9px;font-weight:800;color:var(--text);background:#0a1728}
+.bal.ok{border-color:var(--green);color:var(--green)}
+.bal.bad{border-color:var(--red);color:var(--red)}
+.wb-msg{min-height:44px;margin:10px 0;font-weight:800;line-height:1.5;text-align:center}
+.wb-msg.bad{color:var(--red)}.wb-msg.warn{color:var(--yellow)}.wb-msg.good{color:var(--green)}
+.wb-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.wb-done .equation{font-size:clamp(22px,4vw,34px);font-weight:900;margin:14px 0;color:#eafaff}
+@media(max-width:560px){.wb{padding:16px}.wb-box{min-width:78px;font-size:18px}.chip{font-size:16px;padding:9px 12px}}
+
+</style></head>
+<body>
+<header><div class="logo">⚗️ QUÍMICA <span>QUEST</span></div><nav><button class="nav" onclick="go('inicio')">Início</button><button class="nav" onclick="go('conteudo')">Conteúdo</button><button class="nav" onclick="go('jogo')">Jogar</button><button class="nav" onclick="go('tabela')">Tabela</button><button class="nav" onclick="go('reacoes')">Reações</button></nav></header>
+<main>
+<section id="inicio" class="hero"><div><span class="badge">MISSÃO • LABORATÓRIO QUÍMICO</span><h1>Recupere o <span>Laboratório.</span></h1><p class="lead">Uma contaminação desconhecida tomou conta do laboratório. Identifique substâncias, resolva reações e vença o desafio final!</p><div class="hero-buttons"><button class="primary" onclick="startGame()">🧪 Iniciar missão</button><button class="secondary" onclick="go('conteudo')">📚 Estudar primeiro</button></div><p class="tiny">Dica: use as teclas A–D (ou 1–4) para responder e Enter para avançar.</p><p class="tiny">24 questões • 3 níveis de dificuldade • ordem diferente a cada tentativa</p></div><div class="lab"><div class="lab-icon">🧪</div><h2>OPERAÇÃO: QUÍMICA</h2><p class="lead" style="font-size:14px">Ácidos • Bases • Sais • Óxidos</p><p>⚡ 3 vidas • 🏆 XP por acerto</p></div></section>
+<section id="conteudo"><h2 class="title">📚 Base de conhecimento</h2><p class="sub">Consulte o resumo antes de entrar no desafio.</p><div class="cards">
+<div class="card"><div class="emoji">🍋</div><h3>Ácidos</h3><p>Em água, aumentam a concentração de H⁺. Exemplos: HCl e H₂SO₄.</p></div>
+<div class="card"><div class="emoji">🧼</div><h3>Bases</h3><p>Em água, estão associadas à formação de OH⁻. Exemplos: NaOH e Ca(OH)₂.</p></div>
+<div class="card"><div class="emoji">🧂</div><h3>Sais</h3><p>Compostos iônicos que podem se formar em neutralizações. Exemplos: NaCl e KBr.</p></div>
+<div class="card"><div class="emoji">🌫️</div><h3>Óxidos</h3><p>Compostos binários do oxigênio com outro elemento. Exemplos: CO₂ e CaO.</p></div>
+</div></section>
+
+<section id="progresso"><h2 class="title">🆙 Sua evolução</h2><p class="sub">Cada resposta correta dá XP. Suba de nível para liberar elementos e reações no laboratório.</p>
+<div class="level-banner"><div><div class="tiny">NÍVEL DO CIENTISTA</div><div class="level-number" id="levelNum">NÍVEL 1</div><div class="table-note" id="levelText">Comece a responder para ganhar XP.</div></div><div style="min-width:180px;flex:1;max-width:390px"><div class="tiny" id="xpProgressText">0 / 100 XP para o próximo nível</div><div class="progress"><div id="levelBar"></div></div><div class="table-note" id="unlockedText">1 de 118 elementos liberados</div></div></div></section>
+<section id="tabela"><h2 class="title">⚛️ Tabela periódica desbloqueável</h2><p class="sub">Os elementos cinzas estão bloqueados. Ganhe XP no quiz para liberar a tabela. Clique nos elementos coloridos para selecioná-los.</p>
+<div class="card"><div id="periodicTable" class="periodic"></div><p class="table-note">🟩 Colorido = liberado • 🔒 Cinza = bloqueado • 🟡 Borda amarela = selecionado. Os elementos são liberados conforme seu XP aumenta.</p><div id="selectedElements" class="table-note">Elementos selecionados: nenhum</div><button class="tiny-btn" onclick="clearElements()">Limpar seleção</button></div></section>
+<section id="reacoes"><h2 class="title">⚗️ Cofre de reações</h2><p class="sub">As reações também são desbloqueadas por XP. Selecione na tabela os elementos indicados e clique em “Montar reação”. Na bancada, escolha os compostos, coloque cada um do lado certo e ajuste os coeficientes para balancear a equação. Complete 20 reações para terminar o jogo.</p>
+<div class="level-banner"><div><div class="tiny">REAÇÕES CONCLUÍDAS</div><div class="level-number"><span id="reactionCount">0</span><span style="font-size:20px;color:var(--text)"> / 20</span></div></div><div style="min-width:180px;flex:1;max-width:390px"><div class="tiny" id="reactionProgressText">Faltam 20 reações</div><div class="progress"><div id="reactionBar"></div></div><div class="table-note">Cada reação concluída fica salva nesta partida.</div></div></div>
+<div id="reactionList" class="reaction-list"></div><div id="chemStatus" class="chem-status" aria-live="polite"></div><div id="completion" class="hidden"></div></section>
+
+<section><div class="mission"><h2 class="title">🎯 Como a missão funciona</h2><div class="phases"><div class="phase"><b>🟢 FÁCIL</b><p>Conceitos básicos e fórmulas conhecidas.</p></div><div class="phase"><b>🟡 MÉDIO</b><p>Comparar fórmulas e aplicar o conteúdo.</p></div><div class="phase"><b>🔴 DIFÍCIL</b><p>Reações, nomenclatura e questões com mais etapas.</p></div></div></div></section>
+<section id="jogo"><h2 class="title">🎮 Central da missão</h2><p class="sub">A dificuldade aparece no topo de cada pergunta. As questões mudam de ordem ao reiniciar, mas a sequência de dificuldades é mantida.</p><div class="game">
+<div class="side"><div class="stat"><div class="stat-label">QUESTÃO</div><div id="counter" class="stat-value">—</div></div><div class="stat"><div class="stat-label">PONTUAÇÃO</div><div id="xp" class="stat-value">0 XP</div></div><div class="stat"><div class="stat-label">VIDAS</div><div id="lives" class="stat-value">❤️❤️❤️</div></div><div class="stat"><div class="stat-label">ACERTOS</div><div id="hits" class="stat-value">0</div></div><button class="secondary" onclick="restart()">🔄 Reiniciar desafio</button></div>
+<div class="arena"><div class="progress"><div id="bar"></div></div><div id="gameContent"><div class="end"><div class="end-icon">🔒</div><h2>Missão não iniciada</h2><p class="sub">Clique em iniciar missão para começar.</p><button class="primary" onclick="startGame()">COMEÇAR</button></div></div></div>
+</div></section>
+<section><h2 class="title">📜 Regras</h2><div class="rules"><div class="card"><b>1. Leia</b><p>Analise a pergunta e as alternativas.</p></div><div class="card"><b>2. Responda</b><p>Acertou? Ganha XP. Errou? Perde uma vida.</p></div><div class="card"><b>3. Vença</b><p>Complete as 24 questões antes de perder as 3 vidas.</p></div></div></section>
+</main>
+<div id="wbRoot" class="wb-overlay hidden" role="dialog" aria-modal="true" aria-label="Bancada de reações" onclick="if(event.target===this)closeWB()"></div>
+<footer>Química Quest • Projeto de Química • Integrantes: ______________________________</footer>
+<script>
+const bank=[
+{d:"easy",q:"HCl é classificado como:",a:["Ácido","Base","Sal","Óxido"],c:0,e:"HCl é o ácido clorídrico."},
+{d:"easy",q:"NaOH é classificado como:",a:["Ácido","Base","Sal","Óxido"],c:1,e:"NaOH é o hidróxido de sódio, uma base."},
+{d:"easy",q:"NaCl é classificado como:",a:["Ácido","Base","Sal","Óxido"],c:2,e:"NaCl é o cloreto de sódio, um sal."},
+{d:"easy",q:"CO₂ pertence a qual classe?",a:["Ácido","Base","Sal","Óxido"],c:3,e:"CO₂ é o dióxido de carbono, um óxido."},
+{d:"easy",q:"Qual fórmula representa uma base?",a:["KOH","HCl","CO₂","NaCl"],c:0,e:"KOH é o hidróxido de potássio."},
+{d:"easy",q:"Qual destes é um ácido?",a:["H₂SO₄","CaO","KBr","NaOH"],c:0,e:"H₂SO₄ é o ácido sulfúrico."},
+{d:"easy",q:"CaO é um exemplo de:",a:["Sal","Óxido","Base","Ácido"],c:1,e:"CaO é o óxido de cálcio."},
+{d:"easy",q:"KBr é classificado como:",a:["Base","Ácido","Sal","Óxido"],c:2,e:"KBr é o brometo de potássio, um sal."},
+{d:"medium",q:"Qual par contém apenas ácidos?",a:["HCl e H₂SO₄","NaOH e KOH","NaCl e KBr","CO₂ e CaO"],c:0,e:"HCl e H₂SO₄ são ácidos."},
+{d:"medium",q:"Qual alternativa contém duas bases?",a:["HNO₃ e HCl","NaOH e Ca(OH)₂","NaCl e KBr","SO₂ e CO₂"],c:1,e:"As duas fórmulas têm o grupo hidróxido (OH)."},
+{d:"medium",q:"Qual substância é um sal?",a:["H₂CO₃","Mg(OH)₂","CaCO₃","SO₃"],c:2,e:"CaCO₃ é carbonato de cálcio, um sal."},
+{d:"medium",q:"Qual alternativa apresenta um óxido?",a:["HBr","LiOH","Na₂SO₄","SO₂"],c:3,e:"SO₂ é dióxido de enxofre."},
+{d:"medium",q:"Na neutralização entre ácido e base, geralmente se formam:",a:["Sal e água","Metal e oxigênio","Dois ácidos","Somente gás"],c:0,e:"A neutralização típica produz sal e água."},
+{d:"medium",q:"Qual é o nome de HCl em solução aquosa?",a:["Ácido sulfúrico","Ácido clorídrico","Ácido nítrico","Ácido carbônico"],c:1,e:"HCl(aq) é chamado ácido clorídrico."},
+{d:"medium",q:"Qual fórmula é o hidróxido de cálcio?",a:["CaO","CaCl₂","Ca(OH)₂","H₂Ca"],c:2,e:"O hidróxido de cálcio é Ca(OH)₂."},
+{d:"hard",q:"Complete e balanceie: HCl + NaOH →",a:["NaCl + H₂O","Na₂Cl + H₂O","NaCl + H₂","NaOH₂ + Cl"],c:0,e:"A equação já fica balanceada: HCl + NaOH → NaCl + H₂O."},
+{d:"hard",q:"Qual é o produto salino de H₂SO₄ + 2NaOH → Na₂SO₄ + ?",a:["CO₂","2H₂O","H₂","O₂"],c:1,e:"A neutralização forma sulfato de sódio e 2 moléculas de água."},
+{d:"hard",q:"Qual alternativa relaciona corretamente fórmula e classe?",a:["HNO₃ — base","KOH — ácido","CaCO₃ — sal","CO₂ — base"],c:2,e:"CaCO₃ é carbonato de cálcio, um sal."},
+{d:"hard",q:"Qual é o nome de Na₂SO₄?",a:["Cloreto de sódio","Hidróxido de sódio","Óxido de sódio","Sulfato de sódio"],c:3,e:"Na₂SO₄ é sulfato de sódio."},
+{d:"hard",q:"Qual equação representa corretamente uma neutralização?",a:["HCl + NaOH → NaCl + H₂O","NaCl → HCl + NaOH","CO₂ + O₂ → NaCl","KOH → HCl + H₂"],c:0,e:"Ácido clorídrico + hidróxido de sódio formam sal e água."},
+{d:"hard",q:"Qual destas substâncias é um óxido ácido comum?",a:["NaOH","CO₂","NaCl","HCl"],c:1,e:"CO₂ é um óxido que pode formar ácido carbônico ao reagir com água."},
+{d:"hard",q:"Na reação 2HCl + Ca(OH)₂ → CaCl₂ + ?, o produto que falta é:",a:["CaO","Cl₂","2H₂O","H₂"],c:2,e:"A equação balanceada produz CaCl₂ + 2H₂O."},
+{d:"hard",q:"Qual alternativa apresenta um sal formado por neutralização de HNO₃ com KOH?",a:["K₂O","H₂K","KOH₂","KNO₃"],c:3,e:"Ácido nítrico + hidróxido de potássio formam nitrato de potássio e água."},
+{d:"hard",q:"Qual fórmula corresponde ao ácido carbônico?",a:["H₂CO₃","CaCO₃","CO₂","Na₂CO₃"],c:0,e:"H₂CO₃ é ácido carbônico; CaCO₃ e Na₂CO₃ são sais."}
+];
+const labels={easy:"FÁCIL",medium:"MÉDIO",hard:"DIFÍCIL"},points={easy:50,medium:100,hard:150};
+let run=[],idx=0,xp=0,lives=3,hits=0,locked=false;
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr}
+function buildRun(){
+ const easy=shuffle(bank.filter(x=>x.d==="easy").slice()),medium=shuffle(bank.filter(x=>x.d==="medium").slice()),hard=shuffle(bank.filter(x=>x.d==="hard").slice());
+ // Questões 1-4 fáceis, 5-8 médias, 9-13 difíceis; da 14 em diante, todas as restantes embaralhadas.
+ const plan=["easy","easy","easy","easy","medium","medium","medium","medium","hard","hard","hard","hard","hard"];
+ const used={easy:0,medium:0,hard:0};
+ run=plan.map(d=>({ ...({easy,medium,hard}[d][used[d]++]) }));
+ let rest=[...easy.slice(used.easy),...medium.slice(used.medium),...hard.slice(used.hard)];
+ rest=shuffle(rest);
+ // A partir da 14ª, a dificuldade varia aleatoriamente.
+ run.push(...rest);
+ // Embaralha também a ordem das alternativas (mantendo a resposta certa correta)
+ run=run.map(it=>{const right=it.a[it.c];const a=shuffle(it.a.slice());return {...it,a,c:a.indexOf(right)}});
+}
+function startGame(){
+ // Primeiro inicia o quiz; a interface de XP/tabela é atualizada separadamente
+ // para que um erro visual no laboratório não impeça o jogo de começar.
+ idx=0; xp=0; lives=3; hits=0; locked=false;
+ if (typeof crafted !== "undefined") crafted.clear();
+ if (typeof selected !== "undefined") selected.clear();
+ const c=document.getElementById("completion");
+ if(c){c.classList.add("hidden");c.dataset.shown="";c.innerHTML=""}
+ buildRun();
+ render();
+ go("jogo");
+ try { refreshProgression(); }
+ catch(err) {
+  console.error("Erro ao atualizar tabela/XP:", err);
+  const status=document.getElementById("chemStatus");
+  if(status) status.textContent="O quiz começou! Alguns detalhes do laboratório não carregaram; atualize a página depois da partida.";
+ }
+}
+function restart(){startGame()}
+function render(){
+ document.getElementById("xp").textContent=xp+" XP";document.getElementById("lives").textContent="❤️".repeat(lives)+"🖤".repeat(3-lives);document.getElementById("hits").textContent=hits;
+ document.getElementById("counter").textContent=Math.min(idx+1,run.length)+"/"+run.length;document.getElementById("bar").style.width=(idx/run.length*100)+"%";
+ if(lives<=0){gameOver();return}if(idx>=run.length){finish();return}
+ const item=run[idx], cls=item.d;
+ document.getElementById("gameContent").innerHTML=`<div class="qtop"><span class="badge">QUESTÃO ${idx+1} DE ${run.length}</span><span class="difficulty ${cls}">${labels[cls]}</span></div><div class="question">${item.q}</div><div class="options" id="options"></div><div class="feedback" id="feedback"></div><button class="primary hidden" id="next" onclick="next()">Próxima questão →</button>`;
+ const box=document.getElementById("options");item.a.forEach((a,i)=>{const b=document.createElement("button");b.className="option";b.textContent=String.fromCharCode(65+i)+") "+a;b.onclick=()=>answer(i);box.appendChild(b)});locked=false;
+}
+function answer(i){if(locked)return;locked=true;const item=run[idx],opts=document.querySelectorAll(".option");opts.forEach((b,n)=>{b.disabled=true;if(n===item.c)b.classList.add("correct");if(n===i&&i!==item.c)b.classList.add("wrong")});
+ const fb=document.getElementById("feedback");if(i===item.c){xp+=points[item.d];hits++;fb.style.color="var(--green)";fb.innerHTML=`✅ Correto! +${points[item.d]} XP<br><span class="tiny">${item.e}</span>`}else{lives--;fb.style.color="var(--red)";fb.innerHTML=`❌ Não foi dessa vez!<br><span class="tiny">${item.e}</span>`}
+ document.getElementById("xp").textContent=xp+" XP";document.getElementById("lives").textContent="❤️".repeat(lives)+"🖤".repeat(3-lives);document.getElementById("hits").textContent=hits;refreshProgression();document.getElementById("next").classList.remove("hidden");if(lives<=0)document.getElementById("next").textContent="Ver resultado";
+}
+function next(){idx++;render()}
+function gameOver(){saveBest();document.getElementById("gameContent").innerHTML=`<div class="end"><div class="end-icon">💥</div><h2>Missão interrompida!</h2><p class="sub">Você ficou sem vidas. Reinicie para tentar com outra ordem de perguntas.</p><div class="xp">${xp} XP</div><p>Acertos: ${hits} de ${idx+1}</p><button class="primary" onclick="restart()">Tentar novamente</button></div>`}
+function saveBest(){try{const b=+localStorage.getItem('qq_best')||0;if(xp>b){localStorage.setItem('qq_best',xp);return true}}catch(e){}return false}
+function bestScore(){try{return +localStorage.getItem('qq_best')||0}catch(e){return 0}}
+function finish(){const novo=saveBest();document.getElementById("bar").style.width="100%";document.getElementById("gameContent").innerHTML=`<div class="end"><div class="end-icon">🏆</div><h2>LABORATÓRIO RECUPERADO!</h2><p class="sub">Você concluiu as 24 questões.</p><div class="xp">${xp} XP</div>${novo?'<p style="color:var(--yellow);font-weight:900">🎉 Novo recorde!</p>':`<p class="tiny">Recorde: ${bestScore()} XP</p>`}<p>${hits} acertos de ${run.length} questões</p><p>${hits>=20?"🧠 Excelente domínio!":hits>=15?"⚗️ Muito bem! Revise as questões erradas.":"🔬 Estude o guia e tente novamente!"}</p><button class="primary" onclick="restart()">Jogar novamente</button></div>`;document.getElementById("counter").textContent=run.length+"/"+run.length}
+
+const elements=[
+[1,'H','Hidrogênio',1,1],[2,'He','Hélio',18,1],[3,'Li','Lítio',1,2],[4,'Be','Berílio',2,2],[5,'B','Boro',13,2],[6,'C','Carbono',14,2],[7,'N','Nitrogênio',15,2],[8,'O','Oxigênio',16,2],[9,'F','Flúor',17,2],[10,'Ne','Neônio',18,2],
+[11,'Na','Sódio',1,3],[12,'Mg','Magnésio',2,3],[13,'Al','Alumínio',13,3],[14,'Si','Silício',14,3],[15,'P','Fósforo',15,3],[16,'S','Enxofre',16,3],[17,'Cl','Cloro',17,3],[18,'Ar','Argônio',18,3],
+[19,'K','Potássio',1,4],[20,'Ca','Cálcio',2,4],[21,'Sc','Escândio',3,4],[22,'Ti','Titânio',4,4],[23,'V','Vanádio',5,4],[24,'Cr','Cromo',6,4],[25,'Mn','Manganês',7,4],[26,'Fe','Ferro',8,4],[27,'Co','Cobalto',9,4],[28,'Ni','Níquel',10,4],[29,'Cu','Cobre',11,4],[30,'Zn','Zinco',12,4],[31,'Ga','Gálio',13,4],[32,'Ge','Germânio',14,4],[33,'As','Arsênio',15,4],[34,'Se','Selênio',16,4],[35,'Br','Bromo',17,4],[36,'Kr','Criptônio',18,4],
+[37,'Rb','Rubídio',1,5],[38,'Sr','Estrôncio',2,5],[39,'Y','Ítrio',3,5],[40,'Zr','Zircônio',4,5],[41,'Nb','Nióbio',5,5],[42,'Mo','Molibdênio',6,5],[43,'Tc','Tecnécio',7,5],[44,'Ru','Rutênio',8,5],[45,'Rh','Ródio',9,5],[46,'Pd','Paládio',10,5],[47,'Ag','Prata',11,5],[48,'Cd','Cádmio',12,5],[49,'In','Índio',13,5],[50,'Sn','Estanho',14,5],[51,'Sb','Antimônio',15,5],[52,'Te','Telúrio',16,5],[53,'I','Iodo',17,5],[54,'Xe','Xenônio',18,5],
+[55,'Cs','Césio',1,6],[56,'Ba','Bário',2,6],[57,'La','Lantânio',3,6],[72,'Hf','Háfnio',4,6],[73,'Ta','Tântalo',5,6],[74,'W','Tungstênio',6,6],[75,'Re','Rênio',7,6],[76,'Os','Ósmio',8,6],[77,'Ir','Irídio',9,6],[78,'Pt','Platina',10,6],[79,'Au','Ouro',11,6],[80,'Hg','Mercúrio',12,6],[81,'Tl','Tálio',13,6],[82,'Pb','Chumbo',14,6],[83,'Bi','Bismuto',15,6],[84,'Po','Polônio',16,6],[85,'At','Astato',17,6],[86,'Rn','Radônio',18,6],
+[87,'Fr','Frâncio',1,7],[88,'Ra','Rádio',2,7],[89,'Ac','Actínio',3,7],[104,'Rf','Rutherfórdio',4,7],[105,'Db','Dúbnio',5,7],[106,'Sg','Seabórgio',6,7],[107,'Bh','Bóhrio',7,7],[108,'Hs','Hássio',8,7],[109,'Mt','Meitnério',9,7],[110,'Ds','Darmstádtio',10,7],[111,'Rg','Roentgênio',11,7],[112,'Cn','Copernício',12,7],[113,'Nh','Nihônio',13,7],[114,'Fl','Fleróvio',14,7],[115,'Mc','Moscóvio',15,7],[116,'Lv','Livermório',16,7],[117,'Ts','Tenessino',17,7],[118,'Og','Oganessônio',18,7],
+[58,'Ce','Cério',4,9],[59,'Pr','Praseodímio',5,9],[60,'Nd','Neodímio',6,9],[61,'Pm','Promécio',7,9],[62,'Sm','Samário',8,9],[63,'Eu','Európio',9,9],[64,'Gd','Gadolínio',10,9],[65,'Tb','Térbio',11,9],[66,'Dy','Disprósio',12,9],[67,'Ho','Hólmio',13,9],[68,'Er','Érbio',14,9],[69,'Tm','Túlio',15,9],[70,'Yb','Itérbio',16,9],[71,'Lu','Lutécio',17,9],
+[90,'Th','Tório',4,10],[91,'Pa','Protactínio',5,10],[92,'U','Urânio',6,10],[93,'Np','Netúnio',7,10],[94,'Pu','Plutônio',8,10],[95,'Am','Amerício',9,10],[96,'Cm','Cúrio',10,10],[97,'Bk','Berquélio',11,10],[98,'Cf','Califórnio',12,10],[99,'Es','Einstênio',13,10],[100,'Fm','Férmio',14,10],[101,'Md','Mendelévio',15,10],[102,'No','Nobélio',16,10],[103,'Lr','Laurêncio',17,10]
+];
+const reactions=[
+{eq:'2H₂ + O₂ → 2H₂O',name:'Formação da água',need:['H','O'],xp:0,tip:'Hidrogênio + oxigênio formam água.'},
+{eq:'C + O₂ → CO₂',name:'Dióxido de carbono',need:['C','O'],xp:50,tip:'Carbono reage com oxigênio.'},
+{eq:'2Mg + O₂ → 2MgO',name:'Óxido de magnésio',need:['Mg','O'],xp:100,tip:'Metal + oxigênio pode formar óxido metálico.'},
+{eq:'S + O₂ → SO₂',name:'Dióxido de enxofre',need:['S','O'],xp:150,tip:'Enxofre combina-se com oxigênio.'},
+{eq:'4Fe + 3O₂ → 2Fe₂O₃',name:'Óxido de ferro(III)',need:['Fe','O'],xp:200,tip:'Ferro reage com oxigênio.'},
+{eq:'2Na + Cl₂ → 2NaCl',name:'Cloreto de sódio',need:['Na','Cl'],xp:250,tip:'Sódio + cloro formam um sal iônico.'},
+{eq:'2K + Br₂ → 2KBr',name:'Brometo de potássio',need:['K','Br'],xp:300,tip:'Potássio + bromo formam um sal.'},
+{eq:'CaO + H₂O → Ca(OH)₂',name:'Hidróxido de cálcio',need:['Ca','O','H'],xp:350,tip:'Óxido básico + água pode formar uma base.'},
+{eq:'CO₂ + H₂O ⇌ H₂CO₃',name:'Ácido carbônico',need:['C','O','H'],xp:400,tip:'CO₂ dissolvido em água forma ácido carbônico.'},
+{eq:'SO₃ + H₂O → H₂SO₄',name:'Ácido sulfúrico',need:['S','O','H'],xp:450,tip:'Trióxido de enxofre + água forma ácido sulfúrico.'},
+{eq:'HCl + NaOH → NaCl + H₂O',name:'Neutralização: HCl',need:['H','Cl','Na','O'],xp:500,tip:'Ácido clorídrico + hidróxido de sódio.'},
+{eq:'HNO₃ + KOH → KNO₃ + H₂O',name:'Nitrato de potássio',need:['H','N','O','K'],xp:550,tip:'Ácido nítrico + hidróxido de potássio.'},
+{eq:'H₂SO₄ + 2NaOH → Na₂SO₄ + 2H₂O',name:'Sulfato de sódio',need:['H','S','O','Na'],xp:600,tip:'Ácido sulfúrico + base.'},
+{eq:'2HCl + Ca(OH)₂ → CaCl₂ + 2H₂O',name:'Cloreto de cálcio',need:['H','Cl','Ca','O'],xp:650,tip:'Ácido + base formam sal e água.'},
+{eq:'N₂ + 3H₂ → 2NH₃',name:'Amônia',need:['N','H'],xp:700,tip:'Nitrogênio reage com hidrogênio.'},
+{eq:'2Al + 3Cl₂ → 2AlCl₃',name:'Cloreto de alumínio',need:['Al','Cl'],xp:750,tip:'Alumínio + cloro formam um composto iônico.'},
+{eq:'Zn + 2HCl → ZnCl₂ + H₂',name:'Metal + ácido',need:['Zn','H','Cl'],xp:800,tip:'Alguns metais reagem com ácidos liberando hidrogênio.'},
+{eq:'CaCO₃ → CaO + CO₂',name:'Decomposição do carbonato',need:['Ca','C','O'],xp:850,tip:'O carbonato de cálcio pode se decompor com aquecimento.'},
+{eq:'2Cu + O₂ → 2CuO',name:'Óxido de cobre(II)',need:['Cu','O'],xp:900,tip:'Cobre reage com oxigênio em condições adequadas.'},
+{eq:'4Al + 3O₂ → 2Al₂O₃',name:'Óxido de alumínio',need:['Al','O'],xp:950,tip:'Alumínio + oxigênio formam um óxido.'}
+];
+let selected=new Set(),crafted=new Set();
+function currentLevel(){return Math.floor(xp/100)+1}
+function unlockedCount(){return Math.min(118,Math.floor(xp/25)+1)}
+function refreshProgression(){
+ const level=currentLevel(),next=level*100,prev=(level-1)*100,into=xp-prev;
+ document.getElementById('levelNum').textContent='NÍVEL '+level;
+ document.getElementById('levelText').textContent=level>=30?'Você é uma lenda do laboratório!':'Continue acertando para liberar novos elementos e reações.';
+ document.getElementById('xpProgressText').textContent=level>=30?'Nível máximo alcançado':`${into} / 100 XP para o próximo nível`;
+ document.getElementById('levelBar').style.width=(level>=30?100:into)+'%';
+ document.getElementById('unlockedText').textContent=`${unlockedCount()} de 118 elementos liberados`;
+ renderPeriodic();renderReactions();
+}
+function renderPeriodic(){
+ const table=document.getElementById('periodicTable');if(!table)return;table.innerHTML='';
+ const byPos=new Map(elements.map(e=>[e[3]+','+e[4],e]));
+ for(let row=1;row<=10;row++)for(let col=1;col<=18;col++){
+  const el=byPos.get(col+','+row);
+  if(!el){const sp=document.createElement('div');sp.className='element-spacer';table.appendChild(sp);continue}
+  const [num,sym,name]=el,open=num<=unlockedCount(),b=document.createElement('button');
+  b.className='element'+(open?' unlocked':'')+(selected.has(sym)?' selected':'');b.title=open?`${name} (${sym})`:`${name} — bloqueado`;
+  b.innerHTML=`<span class="anum">${num}</span><span class="sym">${sym}</span><span class="ename">${name}</span>${open?'':'<span class="lock">🔒</span>'}`;
+  b.disabled=!open;b.onclick=()=>{if(selected.has(sym))selected.delete(sym);else selected.add(sym);renderPeriodic();updateSelected();};table.appendChild(b);
+ }
+ updateSelected();
+}
+function updateSelected(){const e=document.getElementById('selectedElements');if(e)e.textContent='Elementos selecionados: '+(selected.size?[...selected].join(', '):'nenhum')}
+function clearElements(){selected.clear();renderPeriodic()}
+function renderReactions(){
+ const list=document.getElementById('reactionList');if(!list)return;list.innerHTML='';
+ reactions.forEach((r,i)=>{
+  const unlocked=xp>=r.xp,done=crafted.has(i),el=document.createElement('div');el.className='reaction'+(done?' done':'')+(!unlocked?' locked-reaction':'');
+  el.innerHTML=`<div class="qtop"><b>${done?'✅ ':unlocked?'⚗️ ':'🔒 '}${r.name}</b><span class="tiny">${done?'CONCLUÍDA':unlocked?'LIBERADA':r.xp+' XP'}</span></div><div class="equation">${unlocked?r.eq:'？？？ + ？？？ → 🔒'}</div><div class="rmeta">${unlocked?r.tip:'Ganhe mais XP para descobrir esta reação.'}</div><button class="tiny-btn" ${!unlocked||done?'disabled':''} onclick="craftReaction(${i})">${done?'Reação concluída':unlocked?'Montar reação':'Bloqueada'}</button>`;
+  list.appendChild(el);
+ });
+ document.getElementById('reactionCount').textContent=crafted.size;
+ document.getElementById('reactionProgressText').textContent=crafted.size>=20?'Todas as reações concluídas!':`Faltam ${20-crafted.size} reações`;
+ document.getElementById('reactionBar').style.width=(crafted.size/20*100)+'%';
+ if(crafted.size>=20)showCompletion();
+}
+function craftReaction(i){const r=reactions[i];if(xp<r.xp||crafted.has(i))return;const missing=r.need.filter(sym=>!selected.has(sym));const status=document.getElementById('chemStatus');
+ if(missing.length){status.textContent='💡 Dica: selecione também '+missing.join(', ')+'.';status.style.color='var(--yellow)';return}
+ status.textContent='✅ Elementos corretos! Agora monte a equação na bancada.';status.style.color='var(--green)';
+ openWorkbench(i);
+}
+function showCompletion(){const c=document.getElementById('completion');if(!c||c.dataset.shown)return;c.dataset.shown='1';c.classList.remove('hidden');c.innerHTML=`<div class="complete-screen"><div style="font-size:76px">🏆</div><h2 style="font-size:clamp(28px,5vw,44px);margin-bottom:8px">Parabéns, você concluiu todo o jogo</h2><p style="font-size:25px;font-weight:900;color:var(--cyan);margin-top:0">você é insano💀</p><p class="sub">20 de 20 reações montadas. A recompensa final é um vídeo surpresa 😈</p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANwAAADcAQAAAAAzIfIsAAAB4ElEQVR4nO2YQY6jMBBFX4VIZue+gbkJfYO5UAab9MXCTZwbwA4k4M8iymg26V7ikfKXfpsny64q28TLTKfXDN7wDY+FZmYW63us6Wuu3M3MPg4U+hZWkrJNDYvtS/O7JkrrkULfw8nOqA698pV7P7OZHSv0IzQNVhOVr4UIfQ+XxqbmurRbXYjQK+i1ojpsXgmASjpUaDOzBjck7psfEvRm5yOFXkfPzOAyLnfuuTIWaVuNrbJJCaK0O33ptvpibXVbQyLsEKXkciVRrO3qbys2E6Ve2eaQoMy9PQNnPiUWZCETYh2q8Vc1HiT0I9TIZtGrmumt6dyw+tv2caDQ60havdawOyWn3WUKPrcPOJzvaWlYLC2NTW2CMgcXJEFbSXNILuOyzeALrbcnoBrhfnLDvjTd0kafq5Eyz+0JWH2/hgRXsBmW5sJQbufFayXO4NQ/+i9tmfX2MSfcKu1gc0hOyemr5DkBWgA6wk7Y4XHtCrWVJO2AU6/cOa2ldt7H3gKdyzZjM53LF68ybf951rbR585lCOlR1Y59ueKGfmognBY7T5/l/go8o5orQEgMZTbXv1B10ByiNTZz8Sq3AVSSclSGsDvtcKEtuaQCnctRSoTdaS312tv7z/gN/0P4BwYeUpnErn0nAAAAAElFTkSuQmCC" alt="QR Code para abrir o vídeo surpresa do TikTok"><p class="tiny">Aponte a câmera do celular para o QR Code.</p><a href="https://vt.tiktok.com/ZSbQHQdD9/" target="_blank" rel="noopener" style="color:var(--cyan)">Ou abra o vídeo por aqui</a></div>`;c.scrollIntoView({behavior:'smooth',block:'center'});}
+
+/* ===== Bancada de reações: montar a equação ===== */
+let wb=null;
+const SUBS='₀₁₂₃₄₅₆₇₈₉';
+function parseFormula(f){
+ f=f.replace(/[₀-₉]/g,c=>SUBS.indexOf(c));
+ const st=[{}];let i=0;
+ const num=()=>{let n='';while(i<f.length&&/\d/.test(f[i]))n+=f[i++];return n?+n:1};
+ while(i<f.length){
+  const ch=f[i];
+  if(ch==='('){st.push({});i++}
+  else if(ch===')'){i++;const n=num(),top=st.pop(),cur=st[st.length-1];for(const k in top)cur[k]=(cur[k]||0)+top[k]*n}
+  else if(/[A-Z]/.test(ch)){let sym=ch;i++;while(i<f.length&&/[a-z]/.test(f[i]))sym+=f[i++];const n=num(),cur=st[st.length-1];cur[sym]=(cur[sym]||0)+n}
+  else i++;
+ }
+ return st[0];
+}
+function parseEq(eq){
+ const arrow=eq.includes('⇌')?'⇌':'→';
+ const [L,R]=eq.split(arrow).map(x=>x.trim());
+ const side=x=>x.split(' + ').map(t=>{const m=t.trim().match(/^(\d+)?(.+)$/);return{coef:+(m[1]||1),f:m[2]}});
+ return{arrow,react:side(L),prod:side(R)};
+}
+function openWorkbench(i){
+ const r=reactions[i],p=parseEq(r.eq);
+ const own=new Set([...p.react,...p.prod].map(x=>x.f));
+ const ownEls=new Set();own.forEach(f=>Object.keys(parseFormula(f)).forEach(e=>ownEls.add(e)));
+ const all=new Set();reactions.forEach(x=>{const q=parseEq(x.eq);[...q.react,...q.prod].forEach(t=>all.add(t.f))});
+ const cand=shuffle([...all].filter(f=>!own.has(f)));
+ const near=cand.filter(f=>Object.keys(parseFormula(f)).some(e=>ownEls.has(e)));
+ const far=cand.filter(f=>!near.includes(f));
+ const extra=near.slice(0,3);for(const f of far){if(extra.length>=4)break;extra.push(f)}
+ wb={i,arrow:p.arrow,exp:p,slots:{r:p.react.map(()=>({f:null,c:1})),p:p.prod.map(()=>({f:null,c:1}))},pool:shuffle([...own,...extra]),active:{side:'r',idx:0},attempts:0,marks:{},msg:'',tone:'',done:false};
+ document.body.style.overflow='hidden';
+ renderWB();
+}
+function wbOrder(){return[...wb.slots.r.map((_,j)=>['r',j]),...wb.slots.p.map((_,j)=>['p',j])]}
+function wbBalance(){
+ const tot=side=>{const t={};wb.slots[side].forEach(s=>{if(!s.f)return;const a=parseFormula(s.f);for(const k in a)t[k]=(t[k]||0)+a[k]*s.c});return t};
+ const L=tot('r'),R=tot('p'),els=[...new Set([...Object.keys(L),...Object.keys(R)])];
+ const full=[...wb.slots.r,...wb.slots.p].every(s=>s.f);
+ return{L,R,els,full,ok:full&&els.every(e=>(L[e]||0)===(R[e]||0))};
+}
+function renderWB(){
+ const root=document.getElementById('wbRoot'),r=reactions[wb.i];root.classList.remove('hidden');
+ if(wb.done){
+  root.innerHTML=`<div class="wb wb-done"><div class="end"><div class="end-icon">🧪✨</div><h2>Reação montada!</h2><div class="equation">${r.eq}</div><p class="sub">${wb.attempts===1?'⭐ De primeira! ':''}+25 XP • ${r.tip}</p><button class="primary" onclick="closeWB()">Continuar</button></div></div>`;
+  return;
+ }
+ const used=new Set([...wb.slots.r,...wb.slots.p].map(s=>s.f).filter(Boolean));
+ const slotHTML=(side,k)=>{
+  const s=wb.slots[side][k],mark=wb.marks[side+k]||'',act=wb.active&&wb.active.side===side&&wb.active.idx===k;
+  return `<div class="wb-slot"><button type="button" class="wb-box${s.f?' filled':''}${act?' active':''}${mark?' '+mark:''}" onclick="wbSlot('${side}',${k})" aria-label="${s.f?'Remover '+s.f:'Espaço vazio'}">${s.f?`<span class="cf">${s.c>1?s.c:''}</span>${s.f}`:'?'}</button><div class="wb-coef"><button type="button" onclick="wbCoef('${side}',${k},-1)" aria-label="Diminuir coeficiente">−</button><b>${s.c}</b><button type="button" onclick="wbCoef('${side}',${k},1)" aria-label="Aumentar coeficiente">+</button></div></div>`;
+ };
+ const sideHTML=side=>wb.slots[side].map((_,k)=>slotHTML(side,k)).join('<span class="wb-op">+</span>');
+ const bal=wbBalance();
+ const balHTML=bal.els.length?`<div class="wb-bal">⚖️ Átomos (esquerda | direita): ${bal.els.map(e=>`<span class="bal ${bal.full?((bal.L[e]||0)===(bal.R[e]||0)?'ok':'bad'):''}">${e} ${bal.L[e]||0} | ${bal.R[e]||0}</span>`).join('')}${bal.full?'':'<span>— preencha todos os espaços para conferir</span>'}</div>`:'';
+ root.innerHTML=`<div class="wb"><div class="wb-head"><div><h3>⚗️ Bancada: ${r.name}</h3><div class="wb-hint">💡 Pista: ${r.tip}</div></div><button type="button" class="wb-close" onclick="closeWB()">✕ Fechar</button></div>
+ <p class="wb-hint">Clique nos compostos para colocá-los nos espaços — <b>reagentes à esquerda</b>, <b>produtos à direita</b>. Use − / + para ajustar os coeficientes e balancear a equação com os menores números inteiros.</p>
+ <div class="wb-eq"><div><div class="wb-side">${sideHTML('r')}</div><div class="wb-label">REAGENTES</div></div><span class="wb-arrow">${wb.arrow}</span><div><div class="wb-side">${sideHTML('p')}</div><div class="wb-label">PRODUTOS</div></div></div>
+ <div class="wb-label">COMPOSTOS DISPONÍVEIS</div><div class="wb-pool">${wb.pool.map((f,k)=>`<button type="button" class="chip" ${used.has(f)?'disabled':''} onclick="wbPick(${k})">${f}</button>`).join('')}</div>
+ ${balHTML}<div class="wb-msg ${wb.tone}" aria-live="polite">${wb.msg}</div>
+ <div class="wb-actions"><button type="button" class="primary" onclick="wbReact()">⚗️ Reagir!</button><button type="button" class="secondary" onclick="wbClear()">🧹 Limpar</button></div></div>`;
+}
+function wbSlot(side,k){const s=wb.slots[side][k];if(s.f)s.f=null;wb.active={side,idx:k};wb.marks={};wb.msg='';wb.tone='';renderWB()}
+function wbCoef(side,k,d){const s=wb.slots[side][k];s.c=Math.min(9,Math.max(1,s.c+d));wb.marks={};wb.msg='';wb.tone='';renderWB()}
+function wbPick(k){
+ const f=wb.pool[k];if([...wb.slots.r,...wb.slots.p].some(s=>s.f===f))return;
+ const order=wbOrder();let tgt=null;
+ if(wb.active&&!wb.slots[wb.active.side][wb.active.idx].f)tgt=[wb.active.side,wb.active.idx];
+ else tgt=order.find(([sd,j])=>!wb.slots[sd][j].f)||null;
+ if(!tgt){wb.msg='Todos os espaços estão ocupados. Clique em um composto da equação para tirá-lo.';wb.tone='warn';renderWB();return}
+ wb.slots[tgt[0]][tgt[1]].f=f;wb.marks={};wb.msg='';wb.tone='';
+ const pos=order.findIndex(([sd,j])=>sd===tgt[0]&&j===tgt[1]);
+ const nxt=[...order.slice(pos+1),...order.slice(0,pos)].find(([sd,j])=>!wb.slots[sd][j].f);
+ wb.active=nxt?{side:nxt[0],idx:nxt[1]}:null;renderWB();
+}
+function wbClear(){['r','p'].forEach(sd=>wb.slots[sd].forEach(s=>{s.f=null;s.c=1}));wb.active={side:'r',idx:0};wb.marks={};wb.msg='';wb.tone='';renderWB()}
+function wbReact(){
+ const S=wb.slots;wb.marks={};
+ if([...S.r,...S.p].some(x=>!x.f)){wb.msg='Preencha todos os espaços antes de reagir.';wb.tone='warn';renderWB();return}
+ wb.attempts++;
+ const groups=[['r',wb.exp.react],['p',wb.exp.prod]];
+ let compoundsOK=true,coefOK=true;
+ groups.forEach(([sd,exp])=>S[sd].forEach((slot,k)=>{const e=exp.find(x=>x.f===slot.f);if(!e){wb.marks[sd+k]='bad';compoundsOK=false}else if(slot.c!==e.coef)coefOK=false}));
+ if(!compoundsOK){wb.msg='❌ Algum composto está no lugar errado ou não participa desta reação (marcado em vermelho). Lembre: reagentes à esquerda, produtos à direita.';wb.tone='bad';renderWB();return}
+ groups.forEach(([sd])=>S[sd].forEach((_,k)=>{wb.marks[sd+k]='ok'}));
+ if(!coefOK){const b=wbBalance();wb.msg=b.ok?'⚖️ Está balanceada, mas use os menores coeficientes inteiros possíveis.':'⚖️ Os compostos estão certos, mas a equação ainda não está balanceada. Ajuste os coeficientes até os átomos ficarem iguais dos dois lados.';wb.tone='warn';renderWB();return}
+ crafted.add(wb.i);xp+=25;wb.done=true;
+ const xpEl=document.getElementById('xp');if(xpEl)xpEl.textContent=xp+' XP';
+ const st=document.getElementById('chemStatus');st.textContent='✨ Reação montada! +25 XP. '+reactions[wb.i].eq;st.style.color='var(--green)';
+ refreshProgression();renderWB();
+}
+function closeWB(){
+ wb=null;document.getElementById('wbRoot').classList.add('hidden');document.body.style.overflow='';
+ const c=document.getElementById('completion');if(crafted.size>=20&&c&&!c.classList.contains('hidden'))c.scrollIntoView({behavior:'smooth',block:'center'});
+}
+document.addEventListener('keydown',e=>{if(wb&&e.key==='Escape')closeWB()});
+
+document.addEventListener('keydown',e=>{
+ if(wb)return;
+ const nextBtn=document.getElementById('next');
+ if(e.key==='Enter'&&nextBtn&&!nextBtn.classList.contains('hidden')&&document.activeElement.tagName!=='BUTTON'){next();return}
+ const k=e.key.toLowerCase(),i='abcd'.indexOf(k)>=0?'abcd'.indexOf(k):'1234'.indexOf(k);
+ if(i>=0&&!locked&&run.length&&idx<run.length&&lives>0&&document.getElementById('options')){answer(i)}
+});
+function go(id){document.getElementById(id).scrollIntoView({behavior:"smooth"})}
+refreshProgression();
+</script></body></html>
